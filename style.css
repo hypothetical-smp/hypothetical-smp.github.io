@@ -2,29 +2,22 @@
 :root {
   --color-a: #3b1d8f;
   --color-b: #ff5e8a;
+  --color-mid: color-mix(in oklab, var(--color-a), var(--color-b));
   --text: #ffffff;
   --logo-width: min(80vw, 640px);
-  --gradient-speed: 14s;
+  --speed: 1;              /* 1 = default, 2 = twice as slow, 0.5 = twice as fast */
   --grain-opacity: 0.35;
   --vignette-strength: 0.35;
 }
 
-
-@property --angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 135deg;
-}
-@property --stop-a {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --stop-b {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
+@property --x1 { syntax: "<percentage>"; inherits: false; initial-value: 20%; }
+@property --y1 { syntax: "<percentage>"; inherits: false; initial-value: 25%; }
+@property --x2 { syntax: "<percentage>"; inherits: false; initial-value: 80%; }
+@property --y2 { syntax: "<percentage>"; inherits: false; initial-value: 30%; }
+@property --x3 { syntax: "<percentage>"; inherits: false; initial-value: 60%; }
+@property --y3 { syntax: "<percentage>"; inherits: false; initial-value: 80%; }
+@property --x4 { syntax: "<percentage>"; inherits: false; initial-value: 15%; }
+@property --y4 { syntax: "<percentage>"; inherits: false; initial-value: 85%; }
 
 *,
 *::before,
@@ -43,24 +36,46 @@ body {
   overflow: hidden;
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(var(--angle), var(--color-a) var(--stop-a), var(--color-b) var(--stop-b));
-  animation: drift var(--gradient-speed) ease-in-out infinite alternate;
+  background:
+    radial-gradient(55vmax 45vmax at var(--x1) var(--y1), var(--color-b), transparent),
+    radial-gradient(60vmax 50vmax at var(--x2) var(--y2), var(--color-a), transparent),
+    radial-gradient(50vmax 55vmax at var(--x3) var(--y3), var(--color-mid), transparent),
+    radial-gradient(45vmax 40vmax at var(--x4) var(--y4), var(--color-b), transparent),
+    var(--color-a);
+  animation:
+    blob1 calc(19s * var(--speed)) ease-in-out infinite alternate,
+    blob2 calc(23s * var(--speed)) ease-in-out infinite alternate,
+    blob3 calc(29s * var(--speed)) ease-in-out infinite alternate,
+    blob4 calc(17s * var(--speed)) ease-in-out infinite alternate;
 }
 
-@keyframes drift {
-  from {
-    --angle: 120deg;
-    --stop-a: -10%;
-    --stop-b: 70%;
-  }
-  to {
-    --angle: 160deg;
-    --stop-a: 30%;
-    --stop-b: 110%;
-  }
+@keyframes blob1 {
+  0%   { --x1: 20%; --y1: 25%; }
+  33%  { --x1: 45%; --y1: 10%; }
+  66%  { --x1: 70%; --y1: 40%; }
+  100% { --x1: 30%; --y1: 65%; }
+}
+@keyframes blob2 {
+  0%   { --x2: 80%; --y2: 30%; }
+  33%  { --x2: 55%; --y2: 55%; }
+  66%  { --x2: 85%; --y2: 75%; }
+  100% { --x2: 60%; --y2: 20%; }
+}
+@keyframes blob3 {
+  0%   { --x3: 60%; --y3: 80%; }
+  33%  { --x3: 25%; --y3: 60%; }
+  66%  { --x3: 40%; --y3: 90%; }
+  100% { --x3: 75%; --y3: 55%; }
+}
+@keyframes blob4 {
+  0%   { --x4: 15%; --y4: 85%; }
+  33%  { --x4: 10%; --y4: 45%; }
+  66%  { --x4: 35%; --y4: 20%; }
+  100% { --x4: 50%; --y4: 70%; }
 }
 
 /* grain */
+
 body::before {
   content: "";
   position: fixed;
@@ -97,7 +112,6 @@ body::after {
   );
 }
 
-/* content */
 .hero {
   position: relative;
   z-index: 3;
@@ -114,8 +128,7 @@ body::after {
 .logo {
   width: var(--logo-width);
   height: auto;
-  aspect-ratio: 4 / 1;
-  color: var(--text);
+  display: block;
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.25));
 }
 
