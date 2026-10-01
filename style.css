@@ -135,6 +135,7 @@ body::after {
   height: auto;
   display: block;
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.25));
+  user-select: none;
 }
 
 .slogan {
@@ -145,6 +146,7 @@ body::after {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.85;
+  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
